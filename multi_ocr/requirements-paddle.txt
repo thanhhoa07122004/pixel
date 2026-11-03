@@ -1,0 +1,4 @@
+paddlepaddle==3.0.0
+paddleocr==3.0.3
+paddlex[ocr]==3.0.3
+numpy>=1.26,<2

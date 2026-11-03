@@ -1,0 +1,14 @@
+local-data/
+.venv*/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+cloudflared.exe
+scratch/
+hangul-pixel-multi-ocr/

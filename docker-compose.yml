@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  hangul-ocr:
+    build: .
+    container_name: hangul-pixel-ocr
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    volumes:
+      - ./local-data:/app/local-data
+    environment:
+      - HANGUL_HOST=0.0.0.0
+      - HANGUL_PORT=8765
+      - HANGUL_ALLOW_ALL_HOSTS=1
+
