@@ -358,7 +358,6 @@ $('#choose').onclick=()=>$('#files').click();$('#files').onchange=e=>{const file
 
 let multiToken=null,activeJob=null;
 async function initMulti(){
- if(!['127.0.0.1','localhost'].includes(location.hostname))return;
  try{const response=await fetch('/api/health');if(!response.ok)return;const data=await response.json();if(data.mode!=='local-multi')return;
  multiToken=data.token;$('#multi').disabled=false;$('#multi').checked=true;
  $('#multi-status').textContent=data.engines.map(e=>e.engine+': '+(e.installed?'có thư viện, kiểm tra mô hình khi chạy':'chưa cài')).join(' · ')+'. Mỗi ảnh bắt buộc thử cả ba; lỗi được báo riêng.';

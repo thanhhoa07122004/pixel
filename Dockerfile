@@ -5,7 +5,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     OMP_NUM_THREADS=4 \
     MKL_NUM_THREADS=4 \
     HANGUL_HOST=0.0.0.0 \
-    HANGUL_PORT=8765 \
+    HANGUL_PORT=7860 \
+    PORT=7860 \
     HANGUL_ALLOW_ALL_HOSTS=1
 
 WORKDIR /app
@@ -30,7 +31,9 @@ RUN pip install --no-cache-dir -r multi_ocr/requirements-base.txt && \
     pip install --no-cache-dir -r multi_ocr/requirements-easy.txt && \
     pip install --no-cache-dir -r multi_ocr/requirements-paddle.txt
 
-EXPOSE 8765
+# Create cache and data directories
+RUN mkdir -p /app/local-data/.paddlex && chmod -R 777 /app/local-data
+
+EXPOSE 7860
 
 CMD ["python", "multi_ocr/server.py"]
-

@@ -26,7 +26,7 @@ LOCK = threading.RLock()
 POOL = ThreadPoolExecutor(max_workers=1)
 TOKEN = uuid.uuid4().hex
 HOST = os.environ.get('HANGUL_HOST', '127.0.0.1')
-PORT = int(os.environ.get('HANGUL_PORT', '8765'))
+PORT = int(os.environ.get('PORT') or os.environ.get('HANGUL_PORT') or '8765')
 
 
 def executable(engine):
@@ -59,11 +59,23 @@ class Engine:
         self.engine = engine
         self.log = open(folder/(engine+'.log'), 'a', encoding='utf-8')
         cpu_threads = str(max(2, min(8, os.cpu_count() or 4)))
-        font_candidate = r'C:\Windows\Fonts\malgun.ttf' if os.path.isfile(r'C:\Windows\Fonts\malgun.ttf') else r'C:\Windows\Fonts\arial.ttf'
+        font_candidate = None
+        for candidate in [
+            r'C:\Windows\Fonts\malgun.ttf',
+            r'C:\Windows\Fonts\arial.ttf',
+            '/usr/share/fonts/truetype/nanum/NanumGothic.ttf',
+            '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+        ]:
+            if os.path.isfile(candidate):
+                font_candidate = candidate
+                break
         paddlex_cache = str(DATA / '.paddlex')
         Path(paddlex_cache).mkdir(parents=True, exist_ok=True)
         env = dict(os.environ, PYTHONIOENCODING='utf-8', OMP_NUM_THREADS=cpu_threads, MKL_NUM_THREADS=cpu_threads,
-                   PADDLE_PDX_LOCAL_FONT_FILE_PATH=font_candidate, PADDLE_PDX_CACHE_HOME=paddlex_cache)
+                   PADDLE_PDX_CACHE_HOME=paddlex_cache)
+        if font_candidate:
+            env['PADDLE_PDX_LOCAL_FONT_FILE_PATH'] = font_candidate
         self.process = subprocess.Popen([executable(engine), str(ROOT/'multi_ocr/engine_worker.py'), engine],
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log,
                                         text=True, encoding='utf-8', env=env)

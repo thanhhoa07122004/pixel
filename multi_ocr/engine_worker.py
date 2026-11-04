@@ -20,6 +20,18 @@ def load():
         import easyocr
         model = easyocr.Reader(['ko', 'en'], gpu=False)
     elif engine == 'paddle':
+        try:
+            import langchain.docstore.document
+        except Exception:
+            try:
+                import langchain_core.documents
+                import types
+                doc = types.ModuleType('langchain.docstore.document')
+                doc.Document = langchain_core.documents.Document
+                sys.modules['langchain.docstore'] = types.ModuleType('langchain.docstore')
+                sys.modules['langchain.docstore.document'] = doc
+            except Exception:
+                pass
         from paddleocr import PaddleOCR
         model = PaddleOCR(lang='korean', ocr_version='PP-OCRv3', device='cpu', use_doc_orientation_classify=False,
                           use_doc_unwarping=False, use_textline_orientation=False)
